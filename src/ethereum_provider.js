@@ -83,7 +83,7 @@ class TrustWeb3Provider extends BaseProvider {
   /**
    * @deprecated Use request() method instead.
    */
-  send(payload) {
+  send(payload,callback = (error,data)=> undefined) {
     if (this.isDebug) {
       console.log(`==> send payload ${JSON.stringify(payload)}`);
     }
@@ -101,11 +101,20 @@ class TrustWeb3Provider extends BaseProvider {
       case "eth_chainId":
         response.result = this.eth_chainId();
         break;
+      // case "eth_signTypedData":
+      //   this._request(payload,)
+      //   // response.result = this.eth_chainId();
+      //   break;
+      // case "eth_signTypedData_v4":
+      //   this._request(payload)
+      //   // response.result = this.eth_chainId();
+      //   break;
       default:
-        throw new ProviderRpcError(
-          4200,
-          `Trust does not support calling ${payload.method} synchronously without a callback. Please provide a callback parameter to call ${payload.method} asynchronously.`
-        );
+        this.sendAsync(payload,callback);
+        // throw new ProviderRpcError(
+        //   4200,
+        //   `Trust does not support calling ${payload.method} synchronously without a callback. Please provide a callback parameter to call ${payload.method} asynchronously.`
+        // );
     }
     return response;
   }
@@ -359,6 +368,8 @@ class TrustWeb3Provider extends BaseProvider {
    */
   postMessage(handler, id, data) {
     if (this.ready || handler === "requestAccounts") {
+      super.postMessage(handler, id, data);
+    }else if(!this.ready && handler === "switchEthereumChain"){
       super.postMessage(handler, id, data);
     } else {
       // don't forget to verify in the app
