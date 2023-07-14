@@ -83,7 +83,7 @@ class TrustWeb3Provider extends BaseProvider {
   /**
    * @deprecated Use request() method instead.
    */
-  send(payload,callback = (error,data)=> undefined) {
+  send(payload) {
     if (this.isDebug) {
       console.log(`==> send payload ${JSON.stringify(payload)}`);
     }
@@ -101,20 +101,11 @@ class TrustWeb3Provider extends BaseProvider {
       case "eth_chainId":
         response.result = this.eth_chainId();
         break;
-      // case "eth_signTypedData":
-      //   this._request(payload,)
-      //   // response.result = this.eth_chainId();
-      //   break;
-      // case "eth_signTypedData_v4":
-      //   this._request(payload)
-      //   // response.result = this.eth_chainId();
-      //   break;
       default:
-        this.sendAsync(payload,callback);
-        // throw new ProviderRpcError(
-        //   4200,
-        //   `Trust does not support calling ${payload.method} synchronously without a callback. Please provide a callback parameter to call ${payload.method} asynchronously.`
-        // );
+        throw new ProviderRpcError(
+          4200,
+          `Trust does not support calling ${payload.method} synchronously without a callback. Please provide a callback parameter to call ${payload.method} asynchronously.`
+        );
     }
     return response;
   }

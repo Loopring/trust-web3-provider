@@ -1025,10 +1025,6 @@ var TrustWeb3Provider = /*#__PURE__*/function (_BaseProvider) {
   }, {
     key: "send",
     value: function send(payload) {
-      var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function (error, data) {
-        return undefined;
-      };
-
       if (this.isDebug) {
         console.log("==> send payload ".concat(JSON.stringify(payload)));
       }
@@ -1054,12 +1050,9 @@ var TrustWeb3Provider = /*#__PURE__*/function (_BaseProvider) {
         case "eth_chainId":
           response.result = this.eth_chainId();
           break;
+
         default:
-          this.sendAsync(payload, callback);
-        // throw new ProviderRpcError(
-        //   4200,
-        //   `Trust does not support calling ${payload.method} synchronously without a callback. Please provide a callback parameter to call ${payload.method} asynchronously.`
-        // );
+          throw new _error["default"](4200, "Trust does not support calling ".concat(payload.method, " synchronously without a callback. Please provide a callback parameter to call ").concat(payload.method, " asynchronously."));
       }
 
       return response;
